@@ -149,9 +149,8 @@
 
       // --- Сборка deep link ---
       function buildIOSDeepLink(url) {
-        // Яндекс.Браузер на iOS принимает URL в base64
-        var b64 = btoa(unescape(encodeURIComponent(url)));
-        return IOS_SCHEME + b64;
+        // Яндекс.Браузер на iOS принимает сырой URL после схемы
+        return IOS_SCHEME + url;
       }
 
       function buildAndroidIntent(url) {
