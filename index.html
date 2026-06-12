@@ -1,238 +1,182 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="referrer" content="no-referrer" />
-  <title>Открываем в Яндекс.Браузере…</title>
-  <style>
-    :root {
-      --bg: #0b0b0d;
-      --card: #16161a;
-      --accent: #ffcc00;
-      --text: #f5f5f7;
-      --muted: #9a9aa2;
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      height: 100%;
-    }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    }
-    .card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--card);
-      border-radius: 20px;
-      padding: 32px 28px;
-      text-align: center;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-    }
-    .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      background: var(--accent);
-      color: #1a1a1a;
-      font-weight: 800;
-      font-size: 36px;
-      line-height: 64px;
-      margin: 0 auto 20px;
-    }
-    h1 {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-    p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
-      margin: 0 0 24px;
-    }
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid rgba(255, 255, 255, 0.15);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      margin: 0 auto 24px;
-      animation: spin 0.9s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .btn {
-      display: inline-block;
-      width: 100%;
-      padding: 14px 20px;
-      border-radius: 12px;
-      background: var(--accent);
-      color: #1a1a1a;
-      font-weight: 700;
-      font-size: 16px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.15s ease;
-    }
-    .btn:active { opacity: 0.8; }
-    .btn.secondary {
-      background: transparent;
-      color: var(--muted);
-      font-weight: 500;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .hidden { display: none; }
-    .error { color: #ff6b6b; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>Открываем в Яндекс Браузере…</title>
+<style>
+  :root{
+    --bg:#0b0b10;
+    --fg:#f5f5f7;
+    --muted:#8a8a93;
+    --red:#fc3f1d;          /* фирменный красный Яндекса */
+    --card:#15151c;
+    --line:#26262f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(252,63,29,.18), transparent 60%),
+      var(--bg);
+    color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+  .wrap{width:100%;max-width:420px;text-align:center}
+
+  /* Сигнатурный элемент: пульсирующий радар-орб */
+  .orb{position:relative;width:104px;height:104px;margin:0 auto 36px}
+  .orb .core{
+    position:absolute;inset:50% auto auto 50%;
+    width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ff6a4d, var(--red) 70%);
+    box-shadow:0 0 28px rgba(252,63,29,.55);
+  }
+  .orb .ring{
+    position:absolute;inset:0;border-radius:50%;
+    border:2px solid var(--red);opacity:0;
+    animation:pulse 2.4s cubic-bezier(.2,.6,.2,1) infinite;
+  }
+  .orb .ring:nth-child(2){animation-delay:.8s}
+  .orb .ring:nth-child(3){animation-delay:1.6s}
+  @keyframes pulse{
+    0%{transform:scale(.5);opacity:.9}
+    100%{transform:scale(1);opacity:0}
+  }
+
+  h1{font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+  p{color:var(--muted);font-size:15px;line-height:1.5;margin:0 auto;max-width:32ch}
+  .host{color:var(--fg);font-weight:600;word-break:break-all}
+
+  .actions{margin-top:30px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(8px);
+    transition:opacity .4s ease, transform .4s ease}
+  .actions.show{opacity:1;transform:none}
+  .btn{
+    appearance:none;border:0;cursor:pointer;text-decoration:none;
+    display:block;padding:15px 18px;border-radius:14px;
+    font-size:16px;font-weight:600;letter-spacing:-.01em;
+  }
+  .btn-primary{background:var(--red);color:#fff;box-shadow:0 8px 24px rgba(252,63,29,.35)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:14px;padding:12px}
+
+  .foot{margin-top:22px;font-size:12px;color:#5a5a63}
+
+  @media (prefers-reduced-motion:reduce){
+    .orb .ring{animation:none;opacity:.4}
+    .actions{transition:none}
+  }
+</style>
 </head>
 <body>
-  <main class="card">
-    <div class="logo">Я</div>
-    <div id="loading">
-      <div class="spinner"></div>
-      <h1>Открываем в Яндекс.Браузере…</h1>
-      <p>Если ничего не произошло, нажмите кнопку ниже.</p>
+  <main class="wrap">
+    <div class="orb" aria-hidden="true">
+      <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+      <span class="core"></span>
     </div>
-    <div id="actions" class="hidden">
-      <h1 id="title">Не удалось открыть автоматически</h1>
-      <p id="subtitle">Откройте ссылку в Яндекс.Браузере или установите его.</p>
-      <button id="open-btn" class="btn">Открыть в Яндекс.Браузере</button>
-      <a id="store-btn" class="btn secondary" href="#">Установить Яндекс.Браузер</a>
+
+    <h1 id="title">Открываем в Яндекс&nbsp;Браузере…</h1>
+    <p id="subtitle">Переходим на <span class="host" id="host">сайт</span></p>
+
+    <div class="actions" id="actions">
+      <a class="btn btn-primary" id="installBtn" href="#">Установить Яндекс Браузер</a>
+      <button class="btn btn-ghost" id="retryBtn" type="button">Попробовать открыть ещё раз</button>
     </div>
+
+    <div class="foot">Если ничего не произошло — нажмите кнопку выше.</div>
   </main>
 
-  <script>
-    (function () {
-      "use strict";
+<script>
+(function(){
+  "use strict";
 
-      // --- Целевая ссылка (захардкожена) ---
-      // Открывается ТОЛЬКО этот адрес. Параметры из URL намеренно игнорируются,
-      // чтобы страницу нельзя было использовать как открытый редирект.
-      // Чтобы поменять цель — отредактируйте строку ниже.
-      var TARGET_URL = "https://ya.ru";
+  // ── Целевая ссылка (захардкожена) ───────────────────────────
+  // Открывается ТОЛЬКО этот адрес. Параметры из URL намеренно игнорируются,
+  // чтобы страницу нельзя было использовать как открытый редирект.
+  // Чтобы сменить цель — отредактируйте строку ниже.
+  var TARGET = "https://ya.ru";
 
-      // --- Настройки приложения Яндекс.Браузер ---
-      var APPSTORE_URL = "https://apps.apple.com/app/id483693909";          // iOS App Store
-      var PLAYSTORE_WEB = "https://play.google.com/store/apps/details?id=com.yandex.browser";
-      var ANDROID_PACKAGE = "com.yandex.browser";
-      var IOS_SCHEME = "yandexbrowser-open-url://";                          // iOS deep link
-      var FALLBACK_TIMEOUT = 1500;                                          // мс до перехода в стор
+  var IOS_SCHEME   = "yandexbrowser-open-url://";                 // схема Яндекс Браузера на iOS
+  var APPSTORE     = "https://apps.apple.com/app/id483693909";    // Яндекс Браузер в App Store
+  var ANDROID_PKG  = "com.yandex.browser";                        // пакет приложения на Android
+  var PLAY_STORE   = "https://play.google.com/store/apps/details?id=" + ANDROID_PKG;
 
-      // --- Определение платформы ---
-      var ua = navigator.userAgent || "";
-      var isIOS = /iPad|iPhone|iPod/.test(ua) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      var isAndroid = /Android/.test(ua);
+  var FALLBACK_DELAY = 2500; // мс ожидания перед уходом в стор
+  var REVEAL_DELAY   = 1800; // мс до показа ручных кнопок
 
-      var targetUrl = TARGET_URL;
+  // ── Определение платформы ───────────────────────────────────
+  var ua        = navigator.userAgent || "";
+  var isIOS     = /iPad|iPhone|iPod/.test(ua) ||
+                  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); // iPadOS
+  var isAndroid = /Android/.test(ua);
+  var STORE     = isIOS ? APPSTORE : PLAY_STORE;
 
-      var loadingEl = document.getElementById("loading");
-      var actionsEl = document.getElementById("actions");
-      var titleEl = document.getElementById("title");
-      var subtitleEl = document.getElementById("subtitle");
-      var openBtn = document.getElementById("open-btn");
-      var storeBtn = document.getElementById("store-btn");
+  // ── UI ──────────────────────────────────────────────────────
+  try { document.getElementById("host").textContent = new URL(TARGET).hostname; }
+  catch (e) { document.getElementById("host").textContent = TARGET; }
 
-      function showActions() {
-        loadingEl.classList.add("hidden");
-        actionsEl.classList.remove("hidden");
-      }
+  document.getElementById("installBtn").setAttribute("href", STORE);
 
-      // --- Сборка deep link ---
-      function buildIOSDeepLink(url) {
-        // URL передаём percent-encoded, иначе внутренний "://" ломает парсинг
-        // и Яндекс.Браузер открывает только "https" вместо полного адреса.
-        return IOS_SCHEME + encodeURIComponent(url);
-      }
+  // Отслеживаем, ушёл ли пользователь из вкладки — значит приложение открылось,
+  // и уводить в стор уже не нужно.
+  var left = false;
+  function markLeft(){ left = true; }
+  document.addEventListener("visibilitychange", function(){ if (document.hidden) markLeft(); });
+  window.addEventListener("pagehide", markLeft);
+  window.addEventListener("blur", markLeft);
 
-      function buildAndroidIntent(url) {
-        // intent:// с встроенным фолбэком в Play Store
-        var stripped = url.replace(/^https?:\/\//i, "");
-        var scheme = /^https:/i.test(url) ? "https" : "http";
-        return "intent://" + stripped +
-          "#Intent;scheme=" + scheme +
-          ";package=" + ANDROID_PACKAGE +
-          ";S.browser_fallback_url=" + encodeURIComponent(PLAYSTORE_WEB) +
-          ";end";
-      }
+  function goToStore(){
+    if (left) return;            // приложение уже открылось
+    location.href = STORE;
+  }
 
-      var storeUrl = isAndroid ? PLAYSTORE_WEB : APPSTORE_URL;
-      storeBtn.setAttribute("href", storeUrl);
+  // ── Попытка открыть Яндекс Браузер ──────────────────────────
+  function openYandex(){
+    if (isAndroid) {
+      // Android-интент со встроенным фолбэком в Google Play, если пакета нет.
+      var noScheme = TARGET.replace(/^https?:\/\//, "");
+      var scheme   = /^http:\/\//.test(TARGET) ? "http" : "https";
+      var intent   =
+        "intent://" + noScheme +
+        "#Intent;scheme=" + scheme +
+        ";package=" + ANDROID_PKG +
+        ";S.browser_fallback_url=" + encodeURIComponent(PLAY_STORE) +
+        ";end";
+      location.href = intent;
+      setTimeout(goToStore, FALLBACK_DELAY); // подстраховка
+    } else if (isIOS) {
+      // iOS: открываем по схеме, через таймаут уходим в App Store, если не открылось.
+      // URL передаём percent-encoded, иначе внутренний "://" ломает парсинг
+      // и Яндекс.Браузер открывает только "https" вместо полного адреса.
+      location.href = IOS_SCHEME + encodeURIComponent(TARGET);
+      setTimeout(goToStore, FALLBACK_DELAY);
+    } else {
+      // Десктоп / прочее: приложения нет — просто открываем сайт.
+      document.getElementById("title").textContent = "Открываем сайт…";
+      location.href = TARGET;
+    }
+  }
 
-      // --- Попытка открыть приложение ---
-      function tryOpenApp() {
-        if (isAndroid) {
-          // Android intent сам уведёт в Play Store, если приложения нет
-          window.location.href = buildAndroidIntent(targetUrl);
-          return;
-        }
+  // Кнопки на случай, если автопереход заблокирован браузером.
+  document.getElementById("retryBtn").addEventListener("click", function(){
+    left = false;
+    openYandex();
+  });
 
-        if (isIOS) {
-          openIOS();
-          return;
-        }
+  // Показать ручные кнопки чуть позже.
+  setTimeout(function(){
+    document.getElementById("actions").classList.add("show");
+  }, REVEAL_DELAY);
 
-        // Десктоп / прочее — просто откроем обычную ссылку
-        loadingEl.classList.add("hidden");
-        actionsEl.classList.remove("hidden");
-        titleEl.textContent = "Открыть ссылку";
-        subtitleEl.textContent = "Яндекс.Браузер доступен на мобильных устройствах.";
-        openBtn.textContent = "Перейти по ссылке";
-        openBtn.onclick = function () { window.location.href = targetUrl; };
-        storeBtn.classList.add("hidden");
-      }
-
-      function openIOS() {
-        var deepLink = buildIOSDeepLink(targetUrl);
-        var didHide = false;
-
-        function onHide() {
-          // Приложение открылось — страница ушла в фон, фолбэк отменяем
-          if (document.hidden) didHide = true;
-        }
-        document.addEventListener("visibilitychange", onHide);
-
-        var start = Date.now();
-        var timer = setTimeout(function () {
-          document.removeEventListener("visibilitychange", onHide);
-          // Если страница всё ещё активна и времени прошло примерно столько,
-          // сколько таймер — значит приложение не открылось → в App Store
-          if (!didHide && !document.hidden && Date.now() - start >= FALLBACK_TIMEOUT - 200) {
-            window.location.href = APPSTORE_URL;
-          }
-        }, FALLBACK_TIMEOUT);
-
-        // Пробуем открыть приложение
-        window.location.href = deepLink;
-
-        // Если пользователь вернулся (didHide), но таймер ещё не сработал —
-        // на всякий случай показываем кнопки
-        setTimeout(showActions, FALLBACK_TIMEOUT + 400);
-      }
-
-      // --- Кнопки ручного управления ---
-      openBtn.addEventListener("click", function () {
-        if (isAndroid) {
-          window.location.href = buildAndroidIntent(targetUrl);
-        } else if (isIOS) {
-          window.location.href = buildIOSDeepLink(targetUrl);
-        } else {
-          window.location.href = targetUrl;
-        }
-      });
-
-      // Запуск
-      tryOpenApp();
-    })();
-  </script>
+  // Стартуем.
+  openYandex();
+})();
+</script>
 </body>
 </html>

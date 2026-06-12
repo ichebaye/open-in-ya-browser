@@ -17,19 +17,19 @@
 Отредактируй одну строку в начале скрипта в `index.html`:
 
 ```js
-var TARGET_URL = "https://ya.ru";
+var TARGET = "https://ya.ru";
 ```
 
 ## Как это работает
 
 - **iOS** — пробуем открыть схему `yandexbrowser-open-url://<percent-encoded url>`.
-  Если за ~1.5 с страница не ушла в фон (приложения нет), редиректим в App Store.
+  Если за ~2.5 с страница не ушла в фон (приложения нет), редиректим в App Store.
 - **Android** — используем `intent://…;package=com.yandex.browser;…` со встроенным
   `S.browser_fallback_url`, ведущим в Google Play, если браузер не установлен.
-- **Десктоп** — показываем кнопку для перехода по обычной ссылке.
+- **Десктоп** — просто открываем сайт в текущем браузере.
 
 ## Настройка
 
-Идентификаторы приложения и таймаут фолбэка задаются в начале скрипта в `index.html`
-(`TARGET_URL`, `APPSTORE_URL`, `PLAYSTORE_WEB`, `ANDROID_PACKAGE`, `IOS_SCHEME`,
-`FALLBACK_TIMEOUT`).
+Идентификаторы приложения и тайминги задаются в начале скрипта в `index.html`
+(`TARGET`, `APPSTORE`, `PLAY_STORE`, `ANDROID_PKG`, `IOS_SCHEME`,
+`FALLBACK_DELAY`, `REVEAL_DELAY`).
