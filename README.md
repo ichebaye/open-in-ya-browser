@@ -22,7 +22,7 @@ var TARGET_URL = "https://ya.ru";
 
 ## Как это работает
 
-- **iOS** — пробуем открыть схему `yandexbrowser-open-url://<url>`.
+- **iOS** — пробуем открыть схему `yandexbrowser-open-url://<percent-encoded url>`.
   Если за ~1.5 с страница не ушла в фон (приложения нет), редиректим в App Store.
 - **Android** — используем `intent://…;package=com.yandex.browser;…` со встроенным
   `S.browser_fallback_url`, ведущим в Google Play, если браузер не установлен.

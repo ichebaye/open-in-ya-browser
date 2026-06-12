@@ -149,8 +149,9 @@
 
       // --- Сборка deep link ---
       function buildIOSDeepLink(url) {
-        // Яндекс.Браузер на iOS принимает сырой URL после схемы
-        return IOS_SCHEME + url;
+        // URL передаём percent-encoded, иначе внутренний "://" ломает парсинг
+        // и Яндекс.Браузер открывает только "https" вместо полного адреса.
+        return IOS_SCHEME + encodeURIComponent(url);
       }
 
       function buildAndroidIntent(url) {
