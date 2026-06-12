@@ -114,6 +114,12 @@
     (function () {
       "use strict";
 
+      // --- Целевая ссылка (захардкожена) ---
+      // Открывается ТОЛЬКО этот адрес. Параметры из URL намеренно игнорируются,
+      // чтобы страницу нельзя было использовать как открытый редирект.
+      // Чтобы поменять цель — отредактируйте строку ниже.
+      var TARGET_URL = "https://ya.ru";
+
       // --- Настройки приложения Яндекс.Браузер ---
       var APPSTORE_URL = "https://apps.apple.com/app/id483693909";          // iOS App Store
       var PLAYSTORE_WEB = "https://play.google.com/store/apps/details?id=com.yandex.browser";
@@ -121,29 +127,13 @@
       var IOS_SCHEME = "yandexbrowser-open-url://";                          // iOS deep link
       var FALLBACK_TIMEOUT = 1500;                                          // мс до перехода в стор
 
-      // --- Получаем целевой URL ---
-      function getTargetUrl() {
-        var params = new URLSearchParams(window.location.search);
-        var url = params.get("url") || params.get("u");
-        if (!url && window.location.hash.length > 1) {
-          url = decodeURIComponent(window.location.hash.slice(1));
-        }
-        if (!url) return "";
-        url = url.trim();
-        // Без схемы — считаем https
-        if (!/^https?:\/\//i.test(url)) {
-          url = "https://" + url.replace(/^\/+/, "");
-        }
-        return url;
-      }
-
       // --- Определение платформы ---
       var ua = navigator.userAgent || "";
       var isIOS = /iPad|iPhone|iPod/.test(ua) ||
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       var isAndroid = /Android/.test(ua);
 
-      var targetUrl = getTargetUrl();
+      var targetUrl = TARGET_URL;
 
       var loadingEl = document.getElementById("loading");
       var actionsEl = document.getElementById("actions");
@@ -155,18 +145,6 @@
       function showActions() {
         loadingEl.classList.add("hidden");
         actionsEl.classList.remove("hidden");
-      }
-
-      // Нет целевого URL — показываем ошибку
-      if (!targetUrl) {
-        loadingEl.classList.add("hidden");
-        actionsEl.classList.remove("hidden");
-        titleEl.textContent = "Не указана ссылка";
-        titleEl.classList.add("error");
-        subtitleEl.textContent = "Добавьте параметр ?url=https://example.com к адресу страницы.";
-        openBtn.classList.add("hidden");
-        storeBtn.classList.add("hidden");
-        return;
       }
 
       // --- Сборка deep link ---
